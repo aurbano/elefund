@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import os
@@ -62,10 +63,12 @@ class Arc(object):
 
 
 
-def create_currency_pair(exchange, fromCurrency, toCurrency):
-	orderbook = exchange.fetch_order_book (createSymbol(fromCurrency, toCurrency))
+def create_currency_pair(exchange, toCurrency, fromCurrency):
+	orderbook = exchange.fetch_order_book (createSymbol(toCurrency, fromCurrency))
 	bid = orderbook['bids'][0][0] if len (orderbook['bids']) > 0 else None
+	convertedBid = convertPriceToUsd(fromCurrency, exchange, bid)
 	ask = orderbook['asks'][0][0] if len (orderbook['asks']) > 0 else None
+	convertedAsk = convertPriceToUsd(fromCurrency, exchange, ask)
 	spread = (ask - bid) if (bid and ask) else None
 
 	fromNode = Node(exchange, fromCurrency)
@@ -75,14 +78,20 @@ def create_currency_pair(exchange, fromCurrency, toCurrency):
 
 
 	print(exchange.id, 'market price', { 'bid': bid, 'ask': ask, 'spread': spread })
-	fromToArc = Arc(fromNode, toNode, exchange, bid)
+	fromToArc = Arc(fromNode, toNode, exchange, convertedBid)
 	arcs.append(fromToArc)
-	toFromArc = Arc(toNode, fromNode, exchange, ask)
+	toFromArc = Arc(toNode, fromNode, exchange, convertedAsk)
 	arcs.append(toFromArc)
 
 
-def createSymbol(fromCurrency, toCurrency):
-	return fromCurrency + "/" + toCurrency
+def convertPriceToUsd(currency, exchange, price):
+	orderbook = exchange.fetch_order_book (createSymbol(currency,'USD'))
+	ask = orderbook['asks'][0][0] if len (orderbook['asks']) > 0 else None
+	return ask
+
+
+def createSymbol(toCurrency, fromCurrency):
+	return toCurrency + "/" + fromCurrency
 
 
 def linkExchanges():
@@ -93,12 +102,14 @@ def linkExchanges():
 				withdrawalArc = Arc(each, compare, each.exchange, withdrawalFee)
 				arcs.append(withdrawalArc)
 
+
 def getWithdrawalFee(exchange, currency):
 	for withdrawalFee in withdrawalFees:
 		split = withdrawalFee.split(',')
 		if (split[0]+split[1] == exchange.name+currency):
-			print ("Withdrawal fee = " + str(split[2]))
-			return split[2]
+			print ("Withdrawal fee = " + str(split[2]) + " " + currency)
+			return convertPriceToUsd(currency, exchange, float(split[2]))
+
 
 def addToGraph():
 	G.add_nodes_from(nodes)
