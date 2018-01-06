@@ -3,20 +3,24 @@
 import networkx as nx
 
 class Market(object):
-    """A market object that exposes arbitrage specific calculation and shortest path routines"""
+    """A market object that exposes rate update and shortest path routines"""
 
     def __init__(self):
         self._graph = nx.MultiDiGraph()
 
-    def add_or_update_exchange_rates(self, exchange_rates):
-        for exchange_rate in exchange_rates:
-            self._graph.add_edge(exchange_rate.from_currency, exchange_rate.to_currency,
-                                 exchange=exchange_rate.exchange, rate=exchange_rate.rates.buy,
-                                 fee=exchange_rate.rates.fee)
-            self._graph.add_edge(exchange_rate.to_currency, exchange_rate.from_currency,
-                                 exchange=exchange_rate.exchange, rate=exchange_rate.rates.sell,
-                                 fee=exchange_rate.rates.fee)
+    def add_or_update_exchange_rate(self, arc, rate):
+        from_node = self._create_node_object(arc.exchange, arc.from_currency)
+        to_node = self._create_node_object(arc.exchange, arc.to_currency)
+        key = from_node+'>'+to_node
 
-    def get_exchange_rates(self):
-        for edge in self._graph.edges(data=True):
-            print(edge)
+        self._graph.add_edge(from_node, to_node, key=key, rate=rate)
+
+    def get_rate(self, arc):
+        from_node = self._create_node_object(arc.exchange, arc.from_currency)
+        to_node = self._create_node_object(arc.exchange, arc.to_currency)
+        key = from_node+'>'+to_node
+
+        return self._graph.get_edge_data(from_node, to_node, key=key)['rate']
+
+    def _create_node_object(self, exchange, currency):
+        return exchange+'@'+currency
