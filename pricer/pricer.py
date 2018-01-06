@@ -1,13 +1,20 @@
+from Queue import Queue
+from threading import Thread
 import time
 import ccxt
-from multiprocessing.pool import ThreadPool
 
 from .price_worker import get_prices
 
 class Pricer ():
     def __init__(self, market):
         self.market = market
-        self.update_markets()
+        #self.update_markets()
+        self.market_queue = Queue(maxsize=0)
+        self.pool = []
+        for i in range(10):
+            worker = Thread(target=get_prices, args=(self.market_queue, self.new_price))
+            worker.setDaemon(True)
+            self.pool.append(worker)
 
     def run(self):
         print('----- Creating thread pool')
@@ -30,3 +37,6 @@ class Pricer ():
             markets.append({'name': market_name, 'api': market_api})
         self.markets = markets
         
+    def new_price(self, price):
+        print('Received a new price')
+        print(price)
