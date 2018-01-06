@@ -8,8 +8,9 @@ from .models import ExchangeRate, Rates
 def test_whenAMarketIsInitializedThenItReturnsCorrectMarketrates():
     market = Market()
 
-    input_market_rates = [ExchangeRate('BTC','ETH','BITFINEX', Rates(D(0.0100001010),D(5.12412412412),D(0.0012322))),
-                          ExchangeRate('ETH','XMR', 'KRAKEN', Rates(D(1.10),D(2.5),D(0.00168)))]
+    input_market_rates = [ExchangeRate('BTC','ETH','BITFINEX', D(0.0100001010)),
+                          ExchangeRate('ETH','XMR', 'KRAKEN', D(0.02))]
+                          
     market.add_or_update_exchange_rates(input_market_rates)
 
     actual_market_rates = market.get_exchange_rates()

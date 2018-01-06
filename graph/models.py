@@ -10,13 +10,3 @@ class ExchangeRate(object):
     def __eq__(self, other):
         print(other)
         return self.__dict__ == other.__dict__
-
-class Rates(object):
-    def __init__(self, buy, sell, fee):
-        self.buy = buy
-        self.sell = sell
-        self.fee = fee
-
-    def __eq__(self, other):
-        print(other)
-        return self.__dict__ == other.__dict__
