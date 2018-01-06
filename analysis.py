@@ -21,6 +21,8 @@ import ccxt  # noqa: E402
 bitfinex = ccxt.bitfinex()
 kraken = ccxt.kraken()
 
+pprint.pprint(kraken.load_markets())
+
 
 withdrawalFees = [
 	'Bitfinex,ETH,0.005',
