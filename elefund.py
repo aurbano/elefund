@@ -5,4 +5,5 @@ from graph import Market
 
 market = Market()
 
-Pricer(market).run()
+pricer = Pricer(market).start()
+pricer.join()
