@@ -5,7 +5,8 @@ from multiprocessing.pool import ThreadPool
 from .price_worker import get_prices
 
 class Pricer ():
-    def __init__(self):
+    def __init__(self, market):
+        self.market = market
         self.update_markets()
 
     def run(self):
@@ -16,6 +17,8 @@ class Pricer ():
         pool.join()
         print('----- Thread pool is done')
         print(results)
+        #for result in results:
+        #    market.add_or_update_exchange_rate(result['market'], result['from'], result['to'], result['price'])
         #time.sleep(1)
         #self.run()
 

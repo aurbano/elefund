@@ -9,7 +9,6 @@ def get_prices(market):
         if market['api'].symbols == None:
             print('WARN: Unauth at %s' % (market['name']))
         else:
-            print('%s ------------------' % (market['name']))
             try:
                 tickers = market['api'].fetch_tickers()
                 #pprint.pprint(tickers)
@@ -19,9 +18,21 @@ def get_prices(market):
                     fx_to = currencies[1]
                     ask = tickers[pair]['ask']
                     bid = tickers[pair]['bid']
-                    print('  From %s to %s - %d' % (fx_from, fx_to, ask));
+                    # store it both ways
+                    prices.append({
+                        'market': market['name'],
+                        'from': fx_from,
+                        'to': fx_to,
+                        'price': ask,
+                    })
+                    prices.append({
+                        'market': market['name'],
+                        'from': fx_to,
+                        'to': fx_from,
+                        'price': 1 / ask,
+                    })
             except Exception as e:
-                print('  Exchange does not allow getting all tickers at once')
+                print('ERROR: %s does not allow getting all tickers at once' % (market['name']))
     except Exception as e:
         logger.error(e)
     finally:
