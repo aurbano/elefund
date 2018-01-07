@@ -1,6 +1,5 @@
 from multiprocessing import JoinableQueue
 import threading
-import time
 import ccxt
 
 from .price_worker import get_prices
@@ -34,7 +33,8 @@ class Pricer ():
             self.market_queue.put({'name': market_name, 'api': market_api})
         
     def new_price(self, ticker):
-        self.market_store.add_or_update_exchange_rate(ticker.from_currency, ticker.to_currency, ticker.exchange, ticker.price)
+        self.market_store.add_or_update_exchange_rate(ticker.from_currency, ticker.to_currency, ticker.exchange, ticker.ask)
+        self.market_store.add_or_update_exchange_rate(ticker.to_currency, ticker.from_currency, ticker.exchange, 1 / ticker.bid)
 
     def market_done(self, market):
         self.market_queue.put(market)
