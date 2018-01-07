@@ -1,5 +1,4 @@
 import logging
-import pprint
 import time
 
 from .ticker import MarketTicker

@@ -1,15 +1,11 @@
 #!/usr/bin/env python3
 
 from pricer import Pricer
-from graph import Market
 from fees import Calculator
+from state import fee_store
 
-market = Market()
-fee_store = {}
-
-#pricer = Pricer(market).start()
-
-Calculator(fee_store).start()
+pricer = Pricer().start()
+Calculator().start()
 
 print('fees')
 print(fee_store)

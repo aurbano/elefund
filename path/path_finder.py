@@ -1,5 +1,7 @@
 from .spread_calculator import SpreadCalculator
-from .arc import Arc
+from graph import Arc
+
+from state import market
 
 class PathFinder(object):
 
@@ -9,8 +11,8 @@ class PathFinder(object):
 
 	#subscriber = SubscriberManager()
 
-	def __init__(self, graph):
-		self.graph = graph
+	def __init__(self):
+		self.graph = market
 		self.hard_coded = [
 			Arc('ETH', 'BTC', 'Kraken'),
 			Arc('BTC', 'XRP', 'Kraken'),
