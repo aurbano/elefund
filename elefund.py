@@ -4,10 +4,11 @@ from pricer import Pricer
 from fees import Calculator
 from state import fee_store
 
-pricer = Pricer().start()
 Calculator().start()
 
-print('fees')
+print('Transaction Fees')
 print(fee_store)
 
-#pricer.join()
+pricer = Pricer().start()
+
+pricer.join()
