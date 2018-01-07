@@ -17,7 +17,7 @@ def get_fee():
       gas_price(gas_quantity, data['safeLow'])
     )
   except Exception as e:
-    return Fee(currency, 0, 0)
+    raise ValueError('Failed to get fees for currency', currency, e)
 
 
 def gas_price(gas_quantity, gwei):

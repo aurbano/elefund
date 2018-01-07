@@ -12,4 +12,4 @@ def get_fee():
         data = response.json()
         return Fee(currency, data['fastestFee'] / satoshi, data['hourFee'] / satoshi)
     except Exception as e:
-        return Fee(currency, 0, 0)
+      raise ValueError('Failed to get fees for currency', currency, e)
