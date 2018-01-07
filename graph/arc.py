@@ -14,3 +14,6 @@ class Arc(object):
 		return self.from_currency == other.from_currency \
 			   and self.to_currency == other.to_currency \
 			   and self.exchange == other.exchange
+
+	def __hash__(self):
+		return hash((self.from_currency, self.to_currency, self.exchange))
