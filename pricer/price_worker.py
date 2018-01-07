@@ -1,10 +1,10 @@
 import logging
-import pprint
 import time
 
 from .ticker import MarketTicker
 
 logger = logging.Logger('catch_all')
+
 
 def get_prices(queue, price_callback, market_callback):
     while True:
@@ -18,18 +18,18 @@ def get_prices(queue, price_callback, market_callback):
             time.sleep(5)
             market_callback(market)
 
+
 def get_price(market, price_callback):
     if market['api'].symbols == None:
         print('WARN: Unauth at %s' % (market['name']))
     else:
         try:
             tickers = market['api'].fetch_tickers()
-            #pprint.pprint(tickers)
             for pair in tickers:
                 currencies = pair.split('/')
-                price_callback(MarketTicker(currencies[0], currencies[1], market['name'], tickers[pair]['ask']))
+                price_callback(MarketTicker(currencies[0], currencies[1], market['name'], tickers[pair]['ask'], tickers[pair]['bid']))
         except Exception as e:
             for symbol in market['api'].symbols:
                 ticker = market['api'].fetch_ticker(symbol)
                 currencies = symbol.split('/')                
-                price_callback(MarketTicker(currencies[0], currencies[1], market['name'], ticker['ask']))
+                price_callback(MarketTicker(currencies[0], currencies[1], market['name'], ticker['ask'], ticker['bid']))
