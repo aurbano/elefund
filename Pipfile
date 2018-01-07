@@ -13,6 +13,7 @@ ccxt = "*"
 
 [dev-packages]
 
+pytest = "*"
 
 
 [requires]
