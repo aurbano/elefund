@@ -2,11 +2,12 @@ from multiprocessing import JoinableQueue
 import threading
 import ccxt
 
+from state import market
 from .price_worker import get_prices
 
 class Pricer ():
-    def __init__(self, market_store):
-        self.market_store = market_store
+    def __init__(self):
+        self.market_store = market
         self.market_queue = JoinableQueue(maxsize=0)
         self.pool = []
         for i in range(10):

@@ -2,9 +2,11 @@ from .currency import btc
 from .currency import eth
 from .currency import xrp
 
+from state import fee_store
+
 
 class Calculator:
-    def __init__(self, fee_store):
+    def __init__(self):
         self.fee_store = fee_store
         self.calculators = {
             'BTC': btc,
