@@ -4,10 +4,14 @@ from pricer import Pricer
 from graph import Market
 from fees import Calculator
 from graph import PathFinder
+from multiprocessing import Queue
 
-market = Market()
-path_finder = PathFinder(market).start_pricing()
-market.add_arc_update_listener(path_finder)
+
+updated_arcs = Queue(maxsize=1000) #shared queue between strats and graph
+market = Market(updated_arcs)
+path_finder = PathFinder(market, updated_arcs).start_pricing()
+
+
 fee_store = {}
 
 pricer = Pricer(market).start()

@@ -3,11 +3,10 @@ import threading
 import ccxt
 import time
 
-from state import market
 from .price_worker import get_prices
 
 class Pricer ():
-    def __init__(self):
+    def __init__(self, market):
         self.market_store = market
         self.market_queue = JoinableQueue(maxsize=0)
         self.pool = []

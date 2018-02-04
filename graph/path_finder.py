@@ -14,11 +14,11 @@ class PathFinder:
         Arc('BTC', 'ETH', 'bittrex'),
         Arc('ETH', 'ETH', 'bittrex')
     ]
-    updated_arcs = Queue(maxsize=1000)
     strategies = []
 
-    def __init__(self, graph):
+    def __init__(self, graph, updated_arcs):
         self.graph = graph
+        self.updated_arcs = updated_arcs
         self.strategies = [
             self.hard_coded
         ]
@@ -27,7 +27,7 @@ class PathFinder:
         path_finder_calc = threading.Thread(target=self.__run_pricing, args=())
         path_finder_calc.setDaemon(True)
         path_finder_calc.start()
-        return self
+        return path_finder_calc
 
     def __run_pricing(self):
         while True:
@@ -37,9 +37,6 @@ class PathFinder:
                     print('Found %s', each)
                     spread = self.calc_path_spread(self.hard_coded)
                     print(spread)
-
-    def arc_updated(self, arc):
-        self.updated_arcs.put(arc)
 
     def calc_path_spread(self, path):
         dictionary = []
