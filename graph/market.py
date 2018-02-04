@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 
 import networkx as nx
+from .arc import Arc
 
 class Market(object):
     """A market object that exposes rate update and shortest path routines"""
+
+    listeners = []
 
     def __init__(self):
         self._graph = nx.MultiDiGraph()
@@ -15,6 +18,8 @@ class Market(object):
 
         print('ADD %s' % key)
         self._graph.add_edge(from_node, to_node, key=key, rate=rate)
+        for each in self.listeners:
+            each.arc_updated(Arc(from_currency, to_currency, exchange))
 
     def get_rate(self, arc):
         from_node = self._create_node_object(arc.exchange, arc.from_currency)
@@ -27,3 +32,6 @@ class Market(object):
 
     def _create_node_object(self, exchange, currency):
         return currency+'@'+exchange
+
+    def add_arc_update_listener(self, listener):
+        self.listeners.append(listener)
