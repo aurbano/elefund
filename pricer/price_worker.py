@@ -21,7 +21,18 @@ def get_prices(queue, price_callback, market_callback):
 
 def get_price(market, price_callback):
     if market['api'].symbols == None:
-        print('WARN: Unauth at %s' % (market['name']))
+        print('WARN: Unauth at %s - trying to use the order book' % (market['name']))
+        currency_pairs = [
+            ['ETH', 'BTC']
+        ]
+        for currencies in currency_pairs:
+            try:
+                orderbook = market['api'].fetch_order_book(currencies[0] + "/" + currencies[1])
+                bid = orderbook['bids'][0][0] if len (orderbook['bids']) > 0 else None
+                ask = orderbook['asks'][0][0] if len (orderbook['asks']) > 0 else None
+                price_callback(MarketTicker(currencies[0], currencies[1], market['name'], ask, bid))
+            except Exception as e:
+                print('WARN: fetch_order_book failed for %s' % (market['name']))
     else:
         try:
             tickers = market['api'].fetch_tickers()
